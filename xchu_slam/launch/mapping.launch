@@ -1,0 +1,33 @@
+<launch>
+    <param name="use_sim_time" value="true"/>
+
+    <param name="tf_b2l_x" value="0"/>
+    <param name="tf_b2l_y" value="0"/>
+    <param name="tf_b2l_z" value="0"/>
+    <param name="tf_b2l_roll" value="0"/>
+    <param name="tf_b2l_pitch" value="0"/>
+    <param name="tf_b2l_yaw" value="0"/>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find xchu_slam)/rviz/test.rviz"/>
+
+    <!--  <node pkg="tf" type="static_transform_publisher" name="base2gps" args="0 0 0 0 0 0 /base_link /gps 10"/>-->
+    <!--  <node pkg="tf" type="static_transform_publisher" name="base2imu" args="0 0 0 0 0 0 /base_link /imu 100"/>-->
+    <node pkg="tf" type="static_transform_publisher" name="base2lidar" args="0 0 0 0 0 0 /base_link /rslidar 100"/>
+
+    <!--标定文件-->
+    <!-- <include file="$(find common)/launch/static_tf.launch" /> -->
+    <!-- <include file="$(find odom_imu)/launch/odom_imu.launch" /> -->
+
+    <node pkg="xchu_slam" type="xchu_mapping_node" name="xchu_mapping_node" output="screen">
+        <!-- <remap from="/odom/imu" to="/odom" /> -->
+        <!--        <remap from="/kitti/velo/pointcloud" to="/cloud"/>-->
+        <!--    <rosparam file="$(find xchu_slam)/params/test.yaml" command="load" />-->
+        <param name="save_dir" value="$(find xchu_slam)/pcd/"/>
+        <param name="use_imu" value="false" type="bool"/>
+        <param name="use_odom" value="false" type="bool"/>
+        <param name="imu_topic" value="/imu/data" type="str"/>
+        <param name="odom_topic" value="/odom/imu" type="str"/>
+        <param name="lidar_topic" value="/kitti/velo/pointcloud" type="str"/>
+    </node>
+
+</launch>
