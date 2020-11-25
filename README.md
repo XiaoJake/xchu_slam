@@ -35,9 +35,9 @@ rosbag play kitti_2011_10_03_drive_0027_synced.bag --clock -r 0.1
 ## Issues
 
 - 线程安全
-- 优化点云配准的初始估计(目前imu和编码器不可用，请设置为false)
+- 目前imu和编码器不可用，请设置为false
 - pitch 的累计误差导致高度漂移问题
-- 目前位姿有抖动情况，尤其是 z 轴（与定位时的抖动比较像，应该可以一起解决）
+- 位姿有抖动情况
 
 ## TODOs
 
