@@ -10,6 +10,7 @@
 
     <node pkg="rviz" type="rviz" name="rviz" args="-d $(find xchu_slam)/rviz/test.rviz"/>
 
+    <!--    <include file="$(find vehicle_description)/launch/lexus.launch"/>-->
     <!--  <node pkg="tf" type="static_transform_publisher" name="base2gps" args="0 0 0 0 0 0 /base_link /gps 10"/>-->
     <!--  <node pkg="tf" type="static_transform_publisher" name="base2imu" args="0 0 0 0 0 0 /base_link /imu 100"/>-->
     <node pkg="tf" type="static_transform_publisher" name="base2lidar" args="0 0 0 0 0 0 /base_link /rslidar 100"/>

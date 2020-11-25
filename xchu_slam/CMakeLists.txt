@@ -58,3 +58,17 @@ target_link_libraries(xchu_mapping_node
         ndt_omp
         )
 
+#[[
+add_executable(map_optimatization_node
+        src/map_optimization.cpp
+        )
+
+target_link_libraries(map_optimatization_node
+        ${catkin_LIBRARIES}
+        ${PCL_LIBRARIES}
+        ${GTSAM_LIBRARIES}
+        gtsam
+        ndt_gpu
+        ndt_cpu
+        ndt_omp
+        )]]

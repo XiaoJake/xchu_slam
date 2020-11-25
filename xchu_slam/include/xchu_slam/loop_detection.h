@@ -1,11 +1,15 @@
 /**
- * @file xchu_slam.h
- * @author xchu
- * 
- */
+* @Program: Project
+* @Description: [用一句话描述此类]
+* @Author: Xiangcheng Hu
+* @Create: 2020/11/25
+* @Copyright: [2020] <Copyright hxc@2022087641@qq.com>
+**/
 
-#ifndef __XCHUSlam__
-#define __XCHUSlam__
+
+#ifndef SRC_XCHU_SLAM_SRC_LOOP_DETECTION_H_
+#define SRC_XCHU_SLAM_SRC_LOOP_DETECTION_H_
+
 
 #include <iostream>
 #include <sstream>
@@ -79,11 +83,13 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(PointXYZIRPYT,
 using PointTPose = PointXYZIRPYT;
 using PointT = pcl::PointXYZI;
 
-class XCHUSlam {
+class LoopDetection {
  public:
-  XCHUSlam(ros::NodeHandle nh, ros::NodeHandle pnh);
+  LoopDetection(ros::NodeHandle nh, ros::NodeHandle pnh);
 
-  ~XCHUSlam();
+  ~LoopDetection();
+
+  void run();
 
   void visualThread();
 
@@ -220,6 +226,8 @@ class XCHUSlam {
   nav_msgs::Odometry pre_odom_, cur_odom_;
 
   std::queue<sensor_msgs::PointCloud2> cloudBuf;
+  std::queue<nav_msgs::OdometryConstPtr> odomBuf;
+
   std::mutex mutex_lock;
 
   std::string _imu_topic;  // 定义imu消息的topic
@@ -239,6 +247,8 @@ class XCHUSlam {
   cpu::NormalDistributionsTransform<PointT, PointT> cpu_ndt_;
   pclomp::NormalDistributionsTransform<pcl::PointXYZI, pcl::PointXYZI>::Ptr ndt_omp_;
 
+  pcl::VoxelGrid<PointT> voxel_filter_;
+
   pcl::PointCloud<PointT>::Ptr pc_source_;
   pcl::PointCloud<PointT>::Ptr pc_target_;
 
@@ -252,10 +262,11 @@ class XCHUSlam {
   std::vector<int> search_idx_;
   std::vector<float> search_dist_;
 
-
+  pcl::VoxelGrid<PointT> ds_source_;
+  pcl::VoxelGrid<PointT> ds_history_keyframes_;
 
   // 回环检测相关
-  bool loop_closed_ = false;
+  bool loop_closed_;
   int latest_history_frame_id_;
   int closest_history_frame_id_;
   pcl::PointCloud<PointT>::Ptr latest_keyframe_;
@@ -267,7 +278,8 @@ class XCHUSlam {
   float scan_period_;
   bool use_odom_, use_imu_;
   float keyframe_dist_; // 移动距离作为关键帧提取参考
-  Eigen::Matrix4f tf_b2l_ = Eigen::Matrix4f::Identity();
+  bool loop_closure_enabled_;
+  Eigen::Matrix4f tf_b2l_;
   int surround_search_num_;      // 提取附近点云
   float surround_search_radius_; // kdtree 搜索参数
   float voxel_leaf_size_;        // 对地图点云进行降采样
@@ -293,9 +305,6 @@ class XCHUSlam {
   pcl::VoxelGrid<pcl::PointXYZI> downSizeFilterGlobalMapKeyFrames; // for global map visualization
   pcl::VoxelGrid<pcl::PointXYZI> downSizeFilterRecentKeyFrames; // for global map visualization
   pcl::VoxelGrid<pcl::PointXYZI> downSizeFilterLocalmap; // for global map visualization
-
-  pcl::VoxelGrid<PointT> downSizeFilterSource;
-  pcl::VoxelGrid<PointT>  downSizeFilterHistoryKeyframes;
 };
 
-#endif
+#endif //SRC_XCHU_SLAM_SRC_LOOP_DETECTION_H_
